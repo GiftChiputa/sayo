@@ -1,0 +1,22 @@
+node_modules/
+dist/
+release/
+native/*.exe
+.test-artifacts/
+research/
+*.log
+.env*
+groq-key.enc*
+Local State
+Preferences
+settings.json*
+writing-tools.json*
+recordings/
+profile/
+VOOL/
+.sayo/
+.sayo-app/
+*.wav
+*.mp3
+*.mp4
+*.pdb

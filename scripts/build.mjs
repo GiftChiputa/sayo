@@ -1,0 +1,14 @@
+import path from 'node:path';
+import { build } from 'esbuild';
+import { mkdir, copyFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+if (process.platform !== 'win32') throw new Error('Sayo currently builds on Windows x64 only.');
+await mkdir('dist', { recursive: true });
+execFileSync(path.join(process.env.SystemRoot || 'C:\\Windows', 'Microsoft.NET', 'Framework64', 'v4.0.30319', 'csc.exe'), ['/nologo', '/target:exe', '/platform:x64', '/reference:System.Windows.Forms.dll', '/out:native\\VOOL.Input.exe', 'native\\InputBridge.cs'], { stdio: 'inherit' });
+await build({ entryPoints: ['src/main.ts'], bundle: true, platform: 'node', format: 'cjs', external: ['electron'], outfile: 'dist/main.cjs' });
+await build({ entryPoints: ['src/preload.ts'], bundle: true, platform: 'node', format: 'cjs', external: ['electron'], outfile: 'dist/preload.cjs' });
+await build({ entryPoints: ['src/ui.tsx'], bundle: true, platform: 'browser', outfile: 'dist/ui.js', define: { 'process.env.NODE_ENV': '"production"' } });
+await copyFile('src/index.html', 'dist/index.html');
+await copyFile('src/styles.css', 'dist/styles.css');
+await copyFile('src/pcm-worklet.js', 'dist/pcm-worklet.js');
+await copyFile('src/icon.png', 'dist/icon.png');
